@@ -20,10 +20,11 @@ chmod 644 /etc/systemd/system/wyoming-satellite.service
 # Reload systemd and enable services
 systemctl daemon-reload
 
-echo "Enabling and starting Wyoming services..."
+echo "Enabling Wyoming services..."
 systemctl enable wyoming-setup
 systemctl enable wyoming-satellite
 
+echo "Starting Wyoming services..."
 # Start services
 systemctl start wyoming-setup
 sleep 2  # Give setup service time to complete
