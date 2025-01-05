@@ -100,5 +100,13 @@ def configure():
         print(f"Error saving configuration: {e}")
         sys.exit(1)
 
+def check_sudo():
+    """Check if script is running with sudo privileges"""
+    if os.geteuid() != 0:
+        print("\nError: This script requires sudo privileges.")
+        print("Please run: sudo python scripts/configure.py")
+        sys.exit(1)
+
 if __name__ == "__main__":
+    check_sudo()
     configure()
