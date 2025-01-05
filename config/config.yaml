@@ -1,0 +1,13 @@
+satellite:
+  name: "default_satellite"
+  area: "default_area"
+  venv: ".wyoming"
+  host: "192.168.1.100"
+  ha_port: 10600
+  satellite_port: 10300
+  wake_word: "hey_jarvis"
+  vad:
+    enabled: true
+    threshold: 2
+    trigger_level: 3
+    chunk_size: 960

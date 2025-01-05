@@ -1,0 +1,19 @@
+[Unit]
+Description=Wyoming Satellite Service
+After=network.target pulseaudio.service wyoming-setup.service
+Requires=wyoming-setup.service
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/home/pi
+Environment=PATH=/home/pi/.wyoming/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/home/pi/.wyoming/bin/wyoming-satellite --uri 'tcp://0.0.0.0:10300' --config /etc/wyoming/satellite.yaml
+Restart=always
+RestartSec=1
+TimeoutStartSec=300
+TimeoutStopSec=300
+
+[Install]
+WantedBy=multi-user.target

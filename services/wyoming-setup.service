@@ -1,0 +1,20 @@
+[Unit]
+Description=Wyoming Setup Service
+After=network.target sound.target
+Before=wyoming-satellite.service
+RequiredBy=wyoming-satellite.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/python3 /usr/local/bin/wyoming/setup.py
+Restart=on-failure
+RestartSec=10
+StartLimitInterval=60
+StartLimitBurst=3
+TimeoutStartSec=300
+TimeoutStopSec=300
+
+[Install]
+WantedBy=multi-user.target
+RequiredBy=wyoming-satellite.service
