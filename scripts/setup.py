@@ -124,6 +124,7 @@ def check_dependencies(config):
     logger.info("Checking dependencies...")
     
     # Create virtual environment
+    logger.info("Checking venv...")
     venv_path = get_user_home() / config['venv']
     if not venv_path.exists():
         logger.info("Creating virtual environment...")
@@ -146,12 +147,13 @@ def check_dependencies(config):
         "alsa-utils",
         "python3-yaml"
     ]
-    
+    logger.info("Running package installs...")
     success, _ = run_command(f"apt-get update && apt-get install -y {' '.join(packages)}", shell=True)
     if not success:
         return False
 
     # Install Python packages
+    logger.info("Running pip installs...")
     venv_pip = venv_path / "bin" / "pip"
     packages = ["wyoming-satellite", "wyoming-openwakeword"]
     
@@ -160,7 +162,7 @@ def check_dependencies(config):
         if not success:
             logger.error(f"Failed to install {package}: {output}")
             return False
-    
+    logger.info("check_dependencies() complete.")
     return True
 
 def update_wyoming_config(config, mic_device, speaker_device=None):

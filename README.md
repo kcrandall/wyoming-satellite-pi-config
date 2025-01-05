@@ -20,12 +20,13 @@ Here's how the system works and how to set it up on a new Pi:
 - Choose Raspberry Pi OS Lite (64-bit)
 - In settings (⚙️):
   - Set hostname (e.g., wyoming-living)
-  - Enable SSH
-  - Set username/password
+  - Enable SSH with password auth
+  - Set username to "admin"
+  - Set a password
   - Configure WiFi if needed
 
 # After first boot, SSH in:
-ssh yourusername@wyoming-living.local
+ssh admin@wyoming-living.local
 ```
 
 2. Clone and Install:
