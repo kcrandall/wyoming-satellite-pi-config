@@ -2,7 +2,6 @@
 Description=Wyoming Setup Service
 After=network.target sound.target
 Before=wyoming-satellite.service
-RequiredBy=wyoming-satellite.service
 
 [Service]
 Type=oneshot
@@ -17,4 +16,3 @@ TimeoutStopSec=300
 
 [Install]
 WantedBy=multi-user.target
-RequiredBy=wyoming-satellite.service

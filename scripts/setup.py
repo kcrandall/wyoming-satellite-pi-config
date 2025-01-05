@@ -113,18 +113,28 @@ def select_best_device(devices):
     
     return list(devices.keys())[0]
 
+def get_user_home():
+    """Get the actual user's home directory even when running as root"""
+    # Get SUDO_USER or default to current user
+    user = os.environ.get('SUDO_USER', os.environ.get('USER', 'admin'))
+    return Path(f'/home/{user}')
+
 def check_dependencies(config):
     """Check and install dependencies"""
     logger.info("Checking dependencies...")
     
     # Create virtual environment
-    venv_path = Path.home() / config['venv']
+    venv_path = get_user_home() / config['venv']
     if not venv_path.exists():
         logger.info("Creating virtual environment...")
         success, output = run_command(['python3', '-m', 'venv', str(venv_path)])
         if not success:
             logger.error(f"Failed to create virtual environment: {output}")
             return False
+        
+        # Set correct ownership
+        user = os.environ.get('SUDO_USER', os.environ.get('USER', 'admin'))
+        run_command(f'chown -R {user}:{user} {str(venv_path)}', shell=True)
 
     # Install system packages
     packages = [

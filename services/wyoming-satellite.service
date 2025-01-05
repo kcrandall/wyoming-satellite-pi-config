@@ -5,11 +5,11 @@ Requires=wyoming-setup.service
 
 [Service]
 Type=simple
-User=pi
-Group=pi
-WorkingDirectory=/home/pi
-Environment=PATH=/home/pi/.wyoming/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-ExecStart=/home/pi/.wyoming/bin/wyoming-satellite --uri 'tcp://0.0.0.0:10300' --config /etc/wyoming/satellite.yaml
+User=admin
+Group=admin
+WorkingDirectory=/home/admin
+Environment=PATH=/home/admin/.wyoming/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/home/admin/.wyoming/bin/wyoming-satellite --uri 'tcp://0.0.0.0:10300' --config /usr/local/bin/wyoming/config.yaml
 Restart=always
 RestartSec=1
 TimeoutStartSec=300
