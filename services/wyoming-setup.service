@@ -11,7 +11,7 @@ Restart=on-failure
 RestartSec=10
 StartLimitInterval=60
 StartLimitBurst=3
-TimeoutStartSec=300
+TimeoutStartSec=900
 TimeoutStopSec=300
 
 [Install]
