@@ -10,8 +10,8 @@ fi
 echo "Setting up Wyoming services..."
 
 # Copy service files
-cp ../services/wyoming-setup.service /etc/systemd/system/
-cp ../services/wyoming-satellite.service /etc/systemd/system/
+cp services/wyoming-setup.service /etc/systemd/system/
+cp services/wyoming-satellite.service /etc/systemd/system/
 
 # Set correct permissions
 chmod 644 /etc/systemd/system/wyoming-setup.service
