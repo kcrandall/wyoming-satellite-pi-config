@@ -137,7 +137,7 @@ def check_dependencies(config):
         "python3-yaml"
     ]
     
-    success, _ = run_command(f"sudo apt-get update && sudo apt-get install -y {' '.join(packages)}", shell=True)
+    success, _ = run_command(f"apt-get update && apt-get install -y {' '.join(packages)}", shell=True)
     if not success:
         return False
 
@@ -199,8 +199,8 @@ def update_wyoming_config(config, mic_device, speaker_device=None):
         with open('/tmp/satellite.yaml', 'w') as f:
             yaml.dump(wyoming_config, f, default_flow_style=False)
         
-        run_command(f'sudo mv /tmp/satellite.yaml {config_path}', shell=True)
-        run_command(f'sudo chown root:root {config_path}', shell=True)
+        run_command(f'mv /tmp/satellite.yaml {config_path}', shell=True)
+        run_command(f'chown root:root {config_path}', shell=True)
     except Exception as e:
         logger.error(f"Failed to update config: {e}")
         return False
