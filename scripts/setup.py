@@ -147,21 +147,39 @@ def check_dependencies(config):
         "alsa-utils",
         "python3-yaml"
     ]
-    logger.info("Running package installs...")
-    success, _ = run_command(f"apt-get update && apt-get install -y {' '.join(packages)}", shell=True)
-    if not success:
-        return False
+    logger.info("Checking system packages...")
+    for package in packages:
+        # Check if package is installed
+        success, output = run_command(f"dpkg -l | grep -q '^ii.*{package}'", shell=True)
+        if success:
+            logger.info(f"Package {package} is already installed")
+        else:
+            logger.info(f"Installing package {package}...")
+            success, output = run_command(f"apt-get install -y {package}", shell=True)
+            if not success:
+                logger.error(f"Failed to install {package}: {output}")
+                return False
 
     # Install Python packages
-    logger.info("Running pip installs...")
+    logger.info("Checking pip packages...")
     venv_pip = venv_path / "bin" / "pip"
     packages = ["wyoming-satellite", "wyoming-openwakeword"]
     
     for package in packages:
+        # Check if package is installed
+        success, output = run_command([str(venv_pip), "list", "--format=json"])
+        if success:
+            installed_packages = json.loads(output)
+            if any(p["name"] == package for p in installed_packages):
+                logger.info(f"Python package {package} is already installed")
+                continue
+        
+        logger.info(f"Installing Python package {package}...")
         success, output = run_command([str(venv_pip), "install", package])
         if not success:
             logger.error(f"Failed to install {package}: {output}")
             return False
+        
     logger.info("check_dependencies() complete.")
     return True
 
