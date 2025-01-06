@@ -27,6 +27,11 @@ chmod 644 /etc/systemd/system/wyoming-setup.service
 chmod 644 /etc/systemd/system/wyoming-satellite.service
 chmod 644 /etc/systemd/system/wyoming-wakeword.service
 
+# Stop any old services 
+systemctl stop wyoming-setup
+systemctl stop wyoming-wakeword
+systemctl stop wyoming-satellite
+
 # Reload systemd and enable services
 systemctl daemon-reload
 

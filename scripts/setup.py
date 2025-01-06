@@ -254,8 +254,8 @@ def update_wyoming_config(config, mic_device, speaker_device=None):
     if speaker_device:
         wyoming_config['satellite']['speaker'] = {
             'command': [
-                    'aplay',
-                '-D', speaker_device or mic_device,  # Use mic_device if speaker_device is None
+                'aplay',
+                '-D', speaker_device,
                 '-r', '22050',
                 '-c', '1',
                 '-f', 'S16_LE',
