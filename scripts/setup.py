@@ -281,11 +281,12 @@ def update_wyoming_config(config, mic_device, speaker_device=None):
         wyoming_config['satellite']['speaker'] = {
             'command': [
                 'aplay',
-                '-D', f"plug{speaker_device}",  # Use plughw for flexible resampling
-                # '-r', '22050',
-                # '-c', '1',
-                # '-f', 'S16_LE',
-                # '-t', 'raw'
+                # '-D', f"plug{speaker_device}",  # Use plughw for flexible resampling
+                '-D', "plughw:CARD=Headphones,DEV=0",
+                '-r', '22050',
+                '-c', '1',
+                '-f', 'S16_LE',
+                '-t', 'raw'
             ]
         }
 
