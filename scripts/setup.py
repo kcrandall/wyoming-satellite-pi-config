@@ -132,10 +132,6 @@ def check_dependencies(config):
         if not success:
             logger.error(f"Failed to create virtual environment: {output}")
             return False
-        
-        # Set correct ownership
-        user = os.environ.get('SUDO_USER', os.environ.get('USER', 'admin'))
-        run_command(f'chown -R {user}:{user} {str(venv_path)}', shell=True)
 
     # Install system packages
     packages = [
