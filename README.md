@@ -39,6 +39,8 @@ sudo apt install git
 git clone https://github.com/githubusername/repo-name.git
 cd repo-name
 
+chmod +x install.sh
+
 # Run installer
 sudo ./install.sh
 ```

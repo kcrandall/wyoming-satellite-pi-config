@@ -20,15 +20,15 @@ sudo cp config/config.yaml /usr/local/bin/wyoming/
 sudo cp scripts/setup.py /usr/local/bin/wyoming/
 sudo cp scripts/configure.py /usr/local/bin/wyoming/
 sudo cp scripts/service_setup.sh /usr/local/bin/wyoming/
-sudo cp scripts/run-wakeword.sh /usr/local/bin/wyoming/
-sudo cp scripts/run-satellite.sh /usr/local/bin/wyoming/
+sudo cp scripts/run-wakeword.py /usr/local/bin/wyoming/
+sudo cp scripts/run-satellite.py /usr/local/bin/wyoming/
 
 # Make scripts executable
 echo "Making scripts executable..."
 sudo chmod +x /usr/local/bin/wyoming/setup.py
 sudo chmod +x /usr/local/bin/wyoming/service_setup.sh
-sudo chmod +x /usr/local/bin/wyoming/run-wakeword.sh
-sudo chmod +x /usr/local/bin/wyoming/run-satellite.sh
+sudo chmod +x /usr/local/bin/wyoming/run-wakeword.py
+sudo chmod +x /usr/local/bin/wyoming/run-satellite.py
 
 # Run service setup
 echo "Runing service_setup.sh..."
