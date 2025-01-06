@@ -3,6 +3,16 @@ import yaml
 import os
 import sys
 from pathlib import Path
+import logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("/var/log/wyoming-satellite.log"),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger("wyoming-satellite")
 
 def load_config():
     config_path = '/etc/wyoming/satellite.yaml'
@@ -14,7 +24,14 @@ def load_config():
         sys.exit(1)
 
 def main():
-    config = load_config()
+    config_path = '/etc/wyoming/satellite.yaml'
+    try:
+        with open(config_path, 'r') as f:
+            return yaml.safe_load(f)['satellite']
+    except Exception as e:
+        logger.error(f"Error loading config: {e}")
+        sys.exit(1)    
+    
     venv_path = Path('/home/admin') / config['venv']
     repo_path = venv_path / 'wyoming-satellite'
     
@@ -47,6 +64,7 @@ def main():
     args_str = ' '.join(args)
     
     # Execute the script/run command
+    logger.info("Executing command")
     cmd = f"cd {repo_path} && script/run {args_str}"
     os.execvp("bash", ["bash", "-c", cmd])
 
