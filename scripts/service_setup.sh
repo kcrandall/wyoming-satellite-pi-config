@@ -9,6 +9,14 @@ fi
 
 echo "Setting up Wyoming services..."
 
+# Ensure all service files are present
+if [ ! -f services/wyoming-setup.service ] || \
+   [ ! -f services/wyoming-satellite.service ] || \
+   [ ! -f services/wyoming-wakeword.service ]; then
+    echo "Error: One or more service files are missing in the 'services' directory."
+    exit 1
+fi
+
 # Copy service files
 cp services/wyoming-setup.service /etc/systemd/system/
 cp services/wyoming-satellite.service /etc/systemd/system/
