@@ -51,7 +51,7 @@ def main():
         str(venv_python),  # Python interpreter from the virtual environment
         "-m", "wyoming_satellite",
         "--name", config['name'],
-        "--uri", f"tcp://0.0.0.0:{config['port']}",
+        "--uri", f"tcp://0.0.0.0:{config.get('port', 10600)}",
         "--mic-command", mic_command,
         "--snd-command", speaker_command,
     ]
