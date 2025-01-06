@@ -8,7 +8,7 @@ Type=simple
 User=admin
 Group=admin
 WorkingDirectory=/home/admin
-Environment=PATH=/home/admin/.wyoming/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+Environment=PATH=/home/admin/.wyoming-openwakeword/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ExecStart=/usr/local/bin/wyoming/run-wakeword.py
 Restart=always
 RestartSec=1

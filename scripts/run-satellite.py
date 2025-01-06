@@ -32,7 +32,7 @@ def main():
     config = load_config()
 
     # Path to the Python interpreter in your virtual environment
-    venv_python = Path("/home/admin/.wyoming/bin/python")
+    venv_python = Path("/home/admin/.wyoming-satellite/bin/python")
 
     # Repository path
     repo_path = Path("/home/admin/.wyoming/wyoming-satellite")

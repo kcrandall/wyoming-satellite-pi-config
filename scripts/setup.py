@@ -116,19 +116,78 @@ def get_user_home():
     user = os.environ.get('SUDO_USER', os.environ.get('USER', 'admin'))
     return Path(f'/home/{user}')
 
-def check_dependencies(config):
-    """Check and install dependencies"""
-    logger.info("Checking dependencies...")
-    
-    # Create virtual environment
-    logger.info("Checking venv...")
-    venv_path = get_user_home() / config['venv']
+def setup_virtual_environment(venv_path, requirements_files):
+    """Set up a virtual environment and install dependencies"""
+    logger.info(f"Setting up virtual environment at {venv_path}")
     if not venv_path.exists():
         logger.info("Creating virtual environment...")
         success, output = run_command(['python3', '-m', 'venv', str(venv_path)])
         if not success:
             logger.error(f"Failed to create virtual environment: {output}")
             return False
+
+    pip_path = venv_path / "bin" / "pip"
+    for req_file in requirements_files:
+        if req_file.exists():
+            logger.info(f"Installing dependencies from {req_file}")
+            success, output = run_command([str(pip_path), "install", "-r", str(req_file)])
+            if not success:
+                logger.error(f"Failed to install dependencies: {output}")
+                return False
+        else:
+            logger.warning(f"Requirements file not found: {req_file}")
+    return True
+
+def setup_openwakeword():
+    """Set up the OpenWakeWord environment"""
+    logger.info("Setting up OpenWakeWord...")
+    venv_path = Path("/home/admin/.wyoming-openwakeword")
+    repository_path = Path("/home/admin/.wyoming/wyoming-openwakeword")
+    requirements_file = repository_path / "requirements.txt"
+
+    if not repository_path.exists():
+        logger.info("Cloning wyoming-openwakeword repository...")
+        success, output = run_command(["git", "clone", "https://github.com/rhasspy/wyoming-openwakeword.git", str(repository_path)])
+        if not success:
+            logger.error(f"Failed to clone OpenWakeWord repository: {output}")
+            return False
+
+    if not setup_virtual_environment(venv_path, [requirements_file]):
+        logger.error("Failed to set up OpenWakeWord virtual environment")
+        return False
+
+    logger.info("OpenWakeWord setup complete")
+    return True
+
+def setup_satellite():
+    """Set up the Satellite environment"""
+    logger.info("Setting up Satellite...")
+    venv_path = Path("/home/admin/.wyoming-satellite")
+    repository_path = Path("/home/admin/.wyoming/wyoming-satellite")
+    requirements_files = [
+        repository_path / "requirements.txt",
+        repository_path / "requirements_audio_enhancement.txt",
+        repository_path / "requirements_vad.txt"
+    ]
+
+    if not repository_path.exists():
+        logger.info("Cloning wyoming-satellite repository...")
+        success, output = run_command(["git", "clone", "https://github.com/rhasspy/wyoming-satellite.git", str(repository_path)])
+        if not success:
+            logger.error(f"Failed to clone Satellite repository: {output}")
+            return False
+
+    if not setup_virtual_environment(venv_path, requirements_files):
+        logger.error("Failed to set up Satellite virtual environment")
+        return False
+
+    logger.info("Satellite setup complete")
+    return True
+
+def check_dependencies(config):
+    """Check and install dependencies"""
+    logger.info("Checking dependencies...")
+    
 
     # Install system packages
     packages = [
@@ -153,56 +212,15 @@ def check_dependencies(config):
                 logger.error(f"Failed to install {package}: {output}")
                 return False
 
-    # Clone wyoming-satellite
-    satellite_path = venv_path / "wyoming-satellite"
-    if not satellite_path.exists():
-        logger.info("Cloning wyoming-satellite repository...")
-        success, output = run_command(["git", "clone", "https://github.com/rhasspy/wyoming-satellite.git", str(satellite_path)])
-        if not success:
-            logger.error(f"Failed to clone satellite repository: {output}")
-            return False
-        
-    # Clone wyoming-openwakeword
-    wakeword_path = venv_path / "wyoming-openwakeword"
-    if not wakeword_path.exists():
-        logger.info("Cloning wyoming-openwakeword repository...")
-        success, output = run_command(["git", "clone", "https://github.com/rhasspy/wyoming-openwakeword.git", str(wakeword_path)])
-        if not success:
-            logger.error(f"Failed to clone openwakeword repository: {output}")
-            return False
-        
-    # Install openwakeword requirements
-    wakeword_requirements = wakeword_path / "requirements.txt"
-    if wakeword_requirements.exists():
-        logger.info("Installing openwakeword requirements...")
-        success, output = run_command([str(venv_pip), "install", "-r", str(wakeword_requirements)])
-        if not success:
-            logger.error(f"Failed to install openwakeword requirements: {output}")
-            return False
-    else:
-        logger.error("Openwakeword requirements file not found")
-        return False
-            
+    if not setup_openwakeword():
+        logger.error("OpenWakeWord setup failed")
+        return
 
-    # Install from requirements files for satellite
-    venv_pip = venv_path / "bin" / "pip"
-    satellite_requirements = [
-        satellite_path / "requirements.txt",
-        satellite_path / "requirements_audio_enhancement.txt",
-        satellite_path / "requirements_vad.txt"
-    ]
-    
-    for req_file in satellite_requirements:
-        if req_file.exists():
-            logger.info(f"Installing requirements from {req_file}...")
-            success, output = run_command([str(venv_pip), "install", "-r", str(req_file)])
-            if not success:
-                logger.error(f"Failed to install requirements from {req_file}: {output}")
-                return False
-        else:
-            logger.error(f"Requirements file not found: {req_file}")
-            return False
-    
+    # Set up Satellite
+    if not setup_satellite():
+        logger.error("Satellite setup failed")
+        return
+   
     # Install additional pip packages
     additional_packages = [
         "pyyaml",  # Add other required packages here if needed
