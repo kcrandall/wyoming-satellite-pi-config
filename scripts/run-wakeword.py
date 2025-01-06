@@ -36,7 +36,7 @@ def main():
         str(venv_python),  # Python interpreter from your venv
         "-m", "wyoming_openwakeword",
         "--uri", f"tcp://0.0.0.0:{config.get('wake_word_port', 10400)}",
-        "--preload-model", config.get('wakeword', 'ok_jarvis'),
+        "--preload-model", config.get('wake_word', 'hey_jarvis'),
     ]
 
     # Set working directory to the repository path
