@@ -3,6 +3,7 @@ import yaml
 import os
 import sys
 from pathlib import Path
+import subprocess
 
 def load_config():
     config_path = '/etc/wyoming/satellite.yaml'
@@ -19,21 +20,26 @@ def load_config():
 
 def main():
     config = load_config()
-    venv_path = Path('/home/admin') / config.get('venv', '.wyoming')
-    repo_path = venv_path / 'wyoming-openwakeword'
+    # venv_path = Path('/home/admin') / config.get('venv', '.wyoming')
+    # repo_path = venv_path / 'wyoming-openwakeword'
     
     # Build command line arguments from config
+    # Python executable from the current virtual environment
+    python_executable = sys.executable
+
+    # Build command line arguments
     args = [
-        f"--uri 'tcp://0.0.0.0:{config.get('wake_word_port', 10400)}'",
-        f"--preload-model '{config.get('wakeword', 'ok_jarvis')}'"
+        python_executable, "-m", "wyoming_openwakeword",
+        f"--uri=tcp://0.0.0.0:{config.get('wake_word_port', 10400)}",
+        f"--preload-model={config.get('wakeword', 'ok_jarvis')}"
     ]
 
-    # Join all arguments
-    args_str = ' '.join(args)
-    
-    # Execute the script/run command
-    cmd = f"cd {repo_path} && script/run {args_str}"
-    os.execvp("bash", ["bash", "-c", cmd])
+    # Execute the wyoming_openwakeword module
+    try:
+        subprocess.check_call(args)
+    except subprocess.CalledProcessError as e:
+        print(f"Error: Failed to run wyoming_openwakeword. {e}")
+        sys.exit(e.returncode)
 
 if __name__ == "__main__":
     main()
