@@ -165,9 +165,6 @@ def check_dependencies(config):
             logger.error(f"Failed to clone satellite repository: {output}")
             return False
         
-        # Set correct ownership
-        run_command(f'chown -R {user}:{user} {str(satellite_path)}', shell=True)
-
     # Clone wyoming-openwakeword
     wakeword_path = venv_path / "wyoming-openwakeword"
     if not wakeword_path.exists():
@@ -177,9 +174,6 @@ def check_dependencies(config):
             logger.error(f"Failed to clone openwakeword repository: {output}")
             return False
         
-        # Set correct ownership
-        run_command(f'chown -R {user}:{user} {str(wakeword_path)}', shell=True)
-
     # Install from requirements files for satellite
     venv_pip = venv_path / "bin" / "pip"
     satellite_requirements = [
