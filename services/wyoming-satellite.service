@@ -1,6 +1,6 @@
 [Unit]
 Description=Wyoming Satellite Service
-After=network.target pulseaudio.service wyoming-setup.service
+After=network.target pulseaudio.service wyoming-setup.service wyoming-openwakeword.service
 Requires=wyoming-setup.service wyoming-openwakeword.service
 
 [Service]
