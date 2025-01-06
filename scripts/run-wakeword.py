@@ -4,6 +4,15 @@ import os
 import sys
 from pathlib import Path
 import subprocess
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+    ]
+)
+logger = logging.getLogger("wyoming-wakeword")
 
 def load_config():
     config_path = '/etc/wyoming/satellite.yaml'
@@ -28,7 +37,7 @@ def main():
 
     # Verify the repository path exists
     if not repo_path.exists():
-        print(f"Error: Repository not found at {repo_path}")
+        logger.error(f"Error: Repository not found at {repo_path}")
         sys.exit(1)
 
     # Command to run the module
@@ -47,7 +56,7 @@ def main():
     try:
         subprocess.check_call(args, env=env, cwd=repo_path)
     except subprocess.CalledProcessError as e:
-        print(f"Error: Failed to run wakeword service. {e}")
+        logger.error(f"Error: Failed to run wakeword service. {e}")
         sys.exit(e.returncode)
 
 if __name__ == "__main__":
