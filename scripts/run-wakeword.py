@@ -19,7 +19,7 @@ def load_config():
 
 def main():
     config = load_config()
-    venv_path = Path('/home/admin') / config['venv']
+    venv_path = Path('/home/admin') / config.get('venv', '.wyoming')
     repo_path = venv_path / 'wyoming-openwakeword'
     
     # Build command line arguments from config
