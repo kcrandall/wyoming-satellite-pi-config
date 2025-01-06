@@ -64,7 +64,7 @@ def main():
     if config.get('wake_word'):
         args.extend([
             "--wake-uri", f"tcp://0.0.0.0:{config.get('wake_word_port', 10400)}",
-            "--wake-word-name", config.get('wakeword', 'ok_nabu'),
+            "--wake-word-name", config.get('wake_word', 'hey_jarvis'),
         ])
 
     # Set environment variables
