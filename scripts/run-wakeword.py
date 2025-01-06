@@ -20,27 +20,32 @@ def load_config():
 
 def main():
     config = load_config()
-    # Paths
+     # Path to the Python interpreter in your virtual environment
     venv_python = Path("/home/admin/.wyoming/bin/python")
-    repo_path = Path("/home/admin/.wyoming/wyoming-openwakeword")
-    main_script = repo_path / "wyoming_openwakeword" / "__main__.py"
 
-    # Ensure the main script exists
-    if not main_script.exists():
-        print(f"Error: Main script not found at {main_script}")
+    # Repository path
+    repo_path = Path("/home/admin/.wyoming/wyoming-openwakeword")
+
+    # Verify the repository path exists
+    if not repo_path.exists():
+        print(f"Error: Repository not found at {repo_path}")
         sys.exit(1)
 
-    # Build command line arguments
+    # Command to run the module
     args = [
         str(venv_python),  # Python interpreter from your venv
-        str(main_script),  # Path to the main script
+        "-m", "wyoming_openwakeword",
         "--uri", f"tcp://0.0.0.0:{config.get('wake_word_port', 10400)}",
         "--preload-model", config.get('wakeword', 'ok_jarvis'),
     ]
 
-    # Execute the main script directly
+    # Set working directory to the repository path
+    env = os.environ.copy()
+    env["PYTHONPATH"] = str(repo_path)  # Add the repository to PYTHONPATH
+
+    # Execute the module
     try:
-        subprocess.check_call(args)
+        subprocess.check_call(args, env=env, cwd=repo_path)
     except subprocess.CalledProcessError as e:
         print(f"Error: Failed to run wakeword service. {e}")
         sys.exit(e.returncode)
