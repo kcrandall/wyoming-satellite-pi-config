@@ -1,7 +1,7 @@
 [Unit]
-Description=Wyoming Satellite Service
-After=network.target pulseaudio.service wyoming-setup.service
-Requires=wyoming-setup.service wyoming-openwakeword.service
+Description=Wyoming Wake Word Service
+After=network.target sound.target
+Before=wyoming-satellite.service
 
 [Service]
 Type=simple
@@ -9,7 +9,7 @@ User=admin
 Group=admin
 WorkingDirectory=/home/admin
 Environment=PATH=/home/admin/.wyoming/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-ExecStart=/usr/local/bin/wyoming/scripts/run-satellite.py
+ExecStart=/usr/local/bin/wyoming/scripts/run-wakeword.py
 Restart=always
 RestartSec=1
 TimeoutStartSec=300

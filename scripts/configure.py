@@ -51,7 +51,8 @@ def configure():
             'host': get_input("Home Assistant IP", config['host']),
             'ha_port': int(get_input("Home Assistant Port", config['ha_port'])),
             'satellite_port': int(get_input("Satellite Port", config['satellite_port'])),
-            'wake_word': get_input("Wake Word", config['wake_word'])
+            'wake_word': get_input("Wake Word", config['wake_word']),
+            'wake_word_port': get_input("Wake Word Port Default 10400", config['wake_word'])
         }
     }
 

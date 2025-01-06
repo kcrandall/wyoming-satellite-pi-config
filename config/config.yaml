@@ -6,6 +6,7 @@ satellite:
   ha_port: 10600
   satellite_port: 10300
   wake_word: "hey_jarvis"
+  wake_word_port: 10400
   vad:
     enabled: true
     threshold: 2

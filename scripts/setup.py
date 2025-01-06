@@ -160,26 +160,61 @@ def check_dependencies(config):
                 logger.error(f"Failed to install {package}: {output}")
                 return False
 
-    # Install Python packages
-    logger.info("Checking pip packages...")
-    venv_pip = venv_path / "bin" / "pip"
-    packages = ["wyoming-satellite", "wyoming-openwakeword"]
-    
-    for package in packages:
-        # Check if package is installed
-        success, output = run_command([str(venv_pip), "list", "--format=json"])
-        if success:
-            installed_packages = json.loads(output)
-            if any(p["name"] == package for p in installed_packages):
-                logger.info(f"Python package {package} is already installed")
-                continue
-        
-        logger.info(f"Installing Python package {package}...")
-        success, output = run_command([str(venv_pip), "install", package])
+    # Clone wyoming-satellite
+    satellite_path = venv_path / "wyoming-satellite"
+    if not satellite_path.exists():
+        logger.info("Cloning wyoming-satellite repository...")
+        success, output = run_command(["git", "clone", "https://github.com/rhasspy/wyoming-satellite.git", str(satellite_path)])
         if not success:
-            logger.error(f"Failed to install {package}: {output}")
+            logger.error(f"Failed to clone satellite repository: {output}")
             return False
         
+        # Set correct ownership
+        run_command(f'chown -R {user}:{user} {str(satellite_path)}', shell=True)
+
+    # Clone wyoming-openwakeword
+    wakeword_path = venv_path / "wyoming-openwakeword"
+    if not wakeword_path.exists():
+        logger.info("Cloning wyoming-openwakeword repository...")
+        success, output = run_command(["git", "clone", "https://github.com/rhasspy/wyoming-openwakeword.git", str(wakeword_path)])
+        if not success:
+            logger.error(f"Failed to clone openwakeword repository: {output}")
+            return False
+        
+        # Set correct ownership
+        run_command(f'chown -R {user}:{user} {str(wakeword_path)}', shell=True)
+
+    # Install from requirements files for satellite
+    venv_pip = venv_path / "bin" / "pip"
+    satellite_requirements = [
+        satellite_path / "requirements.txt",
+        satellite_path / "requirements_audio_enhancement.txt",
+        satellite_path / "requirements_vad.txt"
+    ]
+    
+    for req_file in satellite_requirements:
+        if req_file.exists():
+            logger.info(f"Installing requirements from {req_file}...")
+            success, output = run_command([str(venv_pip), "install", "-r", str(req_file)])
+            if not success:
+                logger.error(f"Failed to install requirements from {req_file}: {output}")
+                return False
+        else:
+            logger.error(f"Requirements file not found: {req_file}")
+            return False
+
+    # Install openwakeword requirements
+    wakeword_requirements = wakeword_path / "requirements.txt"
+    if wakeword_requirements.exists():
+        logger.info("Installing openwakeword requirements...")
+        success, output = run_command([str(venv_pip), "install", "-r", str(wakeword_requirements)])
+        if not success:
+            logger.error(f"Failed to install openwakeword requirements: {output}")
+            return False
+    else:
+        logger.error("Openwakeword requirements file not found")
+        return False
+            
     logger.info("check_dependencies() complete.")
     return True
 
