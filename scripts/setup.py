@@ -171,6 +171,19 @@ def check_dependencies(config):
             logger.error(f"Failed to clone openwakeword repository: {output}")
             return False
         
+    # Install openwakeword requirements
+    wakeword_requirements = wakeword_path / "requirements.txt"
+    if wakeword_requirements.exists():
+        logger.info("Installing openwakeword requirements...")
+        success, output = run_command([str(venv_pip), "install", "-r", str(wakeword_requirements)])
+        if not success:
+            logger.error(f"Failed to install openwakeword requirements: {output}")
+            return False
+    else:
+        logger.error("Openwakeword requirements file not found")
+        return False
+            
+
     # Install from requirements files for satellite
     venv_pip = venv_path / "bin" / "pip"
     satellite_requirements = [
@@ -189,19 +202,7 @@ def check_dependencies(config):
         else:
             logger.error(f"Requirements file not found: {req_file}")
             return False
-
-    # Install openwakeword requirements
-    wakeword_requirements = wakeword_path / "requirements.txt"
-    if wakeword_requirements.exists():
-        logger.info("Installing openwakeword requirements...")
-        success, output = run_command([str(venv_pip), "install", "-r", str(wakeword_requirements)])
-        if not success:
-            logger.error(f"Failed to install openwakeword requirements: {output}")
-            return False
-    else:
-        logger.error("Openwakeword requirements file not found")
-        return False
-            
+    
     # Install additional pip packages
     additional_packages = [
         "pyyaml",  # Add other required packages here if needed
