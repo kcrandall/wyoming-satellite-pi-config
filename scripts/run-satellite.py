@@ -65,7 +65,18 @@ def main():
     # Execute the script/run command
     logger.info("Executing command")
     cmd = f"cd {repo_path} && script/run {args_str}"
-    os.execvp("bash", ["bash", "-c", cmd])
-
+    
+    try:
+        result = subprocess.run(
+            cmd, shell=True, check=True, text=True,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
+        logger.info(f"Command output:\n{result.stdout}")
+        logger.error(f"Command error (if any):\n{result.stderr}")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Command failed with return code {e.returncode}")
+        logger.error(f"Error output:\n{e.stderr}")
+        sys.exit(e.returncode)
+        
 if __name__ == "__main__":
     main()
