@@ -249,10 +249,11 @@ def update_wyoming_config(config, mic_device, speaker_device=None):
     
     wyoming_config = {
         'satellite': {
-            'name': config['name'],
-            'area': config['area'],
-            'host': config['host'],
-            'port': config['ha_port'],
+            'name': config.get('name'),
+            'area': config.get('area'),
+            'host': config.get('host'),
+            'port': config.get('ha_port'),
+            'wake_word': config.get('wake_word'),
             'mic': {
                 'command': [
                     'arecord',
@@ -265,13 +266,13 @@ def update_wyoming_config(config, mic_device, speaker_device=None):
             'wake': {
                 'command': [
                     'wyoming-openwakeword',
-                    '--model', config['wake_word']
+                    '--model', config.get('wake_word')
                 ]
             },
             'vad': {
-                'threshold': 2,           # VAD sensitivity
-                'trigger_level': 3,       # How many positives before triggering
-                'chunk_size': 960         # Audio chunk size for processing
+                'threshold': 2,
+                'trigger_level': 3,
+                'chunk_size': 960
             }
         }
     }
