@@ -205,6 +205,18 @@ def check_dependencies(config):
         logger.error("Openwakeword requirements file not found")
         return False
             
+    # Install additional pip packages
+    additional_packages = [
+        "pyyaml",  # Add other required packages here if needed
+    ]
+    logger.info("Installing additional pip packages...")
+    for package in additional_packages:
+        logger.info(f"Installing {package}...")
+        success, output = run_command([str(venv_pip), "install", package])
+        if not success:
+            logger.error(f"Failed to install {package}: {output}")
+            return False
+
     logger.info("check_dependencies() complete.")
     return True
 
