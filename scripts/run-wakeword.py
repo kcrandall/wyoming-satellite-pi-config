@@ -23,13 +23,17 @@ def main():
     # venv_path = Path('/home/admin') / config.get('venv', '.wyoming')
     # repo_path = venv_path / 'wyoming-openwakeword'
     
-    # Build command line arguments from config
-    # Python executable from the current virtual environment
-    python_executable = sys.executable
+    # Path to the Python interpreter in the virtual environment
+    venv_python = Path("/home/admin/.wyoming/bin/python")
+
+    # Ensure the interpreter exists
+    if not venv_python.exists():
+        print(f"Error: Python interpreter not found at {venv_python}")
+        sys.exit(1)
 
     # Build command line arguments
     args = [
-        python_executable, "-m", "wyoming_openwakeword",
+        str(venv_python), "-m", "wyoming_openwakeword",
         f"--uri=tcp://0.0.0.0:{config.get('wake_word_port', 10400)}",
         f"--preload-model={config.get('wakeword', 'ok_jarvis')}"
     ]
