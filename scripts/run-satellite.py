@@ -31,7 +31,7 @@ def main():
         logger.error(f"Error loading config: {e}")
         sys.exit(1)    
     
-    venv_path = Path('/home/admin') / config['venv']
+    venv_path = Path('/home/admin') / config.get('venv', '.wyoming')
     repo_path = venv_path / 'wyoming-satellite'
     
     mic_command = ' '.join(config.get('mic', {}).get('command', []))
@@ -77,6 +77,6 @@ def main():
         logger.error(f"Command failed with return code {e.returncode}")
         logger.error(f"Error output:\n{e.stderr}")
         sys.exit(e.returncode)
-        
+
 if __name__ == "__main__":
     main()
