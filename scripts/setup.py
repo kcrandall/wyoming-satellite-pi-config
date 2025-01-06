@@ -72,29 +72,26 @@ def get_audio_devices():
         logger.error(f"Failed to get audio devices: {e}")
         return None, None
 
-    # Parse devices
     mic_devices = {}
     speaker_devices = {}
-    
+
     # Parse microphone devices
     for line in mic_output.split('\n'):
-        if 'card' in line:
-            match = re.search(r'card (\d+).*?(\[.*?\]).*device (\d+)', line)
+        if 'card' in line and 'device' in line:
+            match = re.search(r'card (\d+): ([^\[]+)\[(.*?)\], device (\d+): (.*)', line)
             if match:
-                card_num, card_name, device_num = match.groups()
-                card_name = card_name.strip('[]')
-                device_id = f"hw:CARD={card_name},DEV={device_num}"
-                mic_devices[device_id] = line
+                card_num, card_name, card_id, device_num, device_desc = match.groups()
+                device_id = f"hw:{card_num},{device_num}"
+                mic_devices[device_id] = f"{card_name.strip()} [{card_id.strip()}]: {device_desc.strip()}"
 
     # Parse speaker devices
     for line in speaker_output.split('\n'):
-        if 'card' in line:
-            match = re.search(r'card (\d+).*?(\[.*?\]).*device (\d+)', line)
+        if 'card' in line and 'device' in line:
+            match = re.search(r'card (\d+): ([^\[]+)\[(.*?)\], device (\d+): (.*)', line)
             if match:
-                card_num, card_name, device_num = match.groups()
-                card_name = card_name.strip('[]')
-                device_id = f"hw:CARD={card_name},DEV={device_num}"
-                speaker_devices[device_id] = line
+                card_num, card_name, card_id, device_num, device_desc = match.groups()
+                device_id = f"hw:{card_num},{device_num}"
+                speaker_devices[device_id] = f"{card_name.strip()} [{card_id.strip()}]: {device_desc.strip()}"
 
     return mic_devices, speaker_devices
 
