@@ -138,6 +138,20 @@ def setup_virtual_environment(venv_path, requirements_files):
             logger.warning(f"Requirements file not found: {req_file}")
     return True
 
+def install_additional_packages(venv_path):
+    venv_pip = venv_path / "bin" / "pip"
+    # Install additional pip packages
+    additional_packages = [
+        "pyyaml",  # Add other required packages here if needed
+    ]
+    logger.info("Installing additional pip packages...")
+    for package in additional_packages:
+        logger.info(f"Installing {package}...")
+        success, output = run_command([str(venv_pip), "install", package])
+        if not success:
+            logger.error(f"Failed to install {package}: {output}")
+            return False
+        
 def setup_openwakeword():
     """Set up the OpenWakeWord environment"""
     logger.info("Setting up OpenWakeWord...")
@@ -156,6 +170,7 @@ def setup_openwakeword():
         logger.error("Failed to set up OpenWakeWord virtual environment")
         return False
 
+    install_additional_packages(venv_path)
     logger.info("OpenWakeWord setup complete")
     return True
 
@@ -221,17 +236,7 @@ def check_dependencies(config):
         logger.error("Satellite setup failed")
         return
    
-    # Install additional pip packages
-    additional_packages = [
-        "pyyaml",  # Add other required packages here if needed
-    ]
-    logger.info("Installing additional pip packages...")
-    for package in additional_packages:
-        logger.info(f"Installing {package}...")
-        success, output = run_command([str(venv_pip), "install", package])
-        if not success:
-            logger.error(f"Failed to install {package}: {output}")
-            return False
+    
 
     logger.info("check_dependencies() complete.")
     return True
