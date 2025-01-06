@@ -169,3 +169,10 @@ root/
   - Runs the Wyoming satellite
   - Depends on setup service
   - Manages the satellite process
+
+
+#### Debugging 
+```
+sudo systemctl status wyoming-satellite.service --no-pager
+sudo journalctl -u wyoming-satellite.service
+```
