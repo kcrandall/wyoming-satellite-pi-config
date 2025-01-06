@@ -5,11 +5,10 @@ import sys
 from pathlib import Path
 import logging
 logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(levelname)s - %(message)s',
+    level=logging.INFO,  # Set the logging level
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler("/var/log/wyoming-satellite.log"),
-        logging.StreamHandler()
+        logging.StreamHandler(),  # Log only to the console
     ]
 )
 logger = logging.getLogger("wyoming-satellite")
