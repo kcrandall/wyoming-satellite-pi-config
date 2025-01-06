@@ -20,29 +20,29 @@ def load_config():
 
 def main():
     config = load_config()
-    # venv_path = Path('/home/admin') / config.get('venv', '.wyoming')
-    # repo_path = venv_path / 'wyoming-openwakeword'
-    
-    # Path to the Python interpreter in the virtual environment
+    # Paths
     venv_python = Path("/home/admin/.wyoming/bin/python")
+    repo_path = Path("/home/admin/.wyoming/wyoming-openwakeword")
+    main_script = repo_path / "wyoming_openwakeword" / "__main__.py"
 
-    # Ensure the interpreter exists
-    if not venv_python.exists():
-        print(f"Error: Python interpreter not found at {venv_python}")
+    # Ensure the main script exists
+    if not main_script.exists():
+        print(f"Error: Main script not found at {main_script}")
         sys.exit(1)
 
     # Build command line arguments
     args = [
-        str(venv_python), "-m", "wyoming_openwakeword",
-        f"--uri=tcp://0.0.0.0:{config.get('wake_word_port', 10400)}",
-        f"--preload-model={config.get('wakeword', 'ok_jarvis')}"
+        str(venv_python),  # Python interpreter from your venv
+        str(main_script),  # Path to the main script
+        "--uri", f"tcp://0.0.0.0:{config.get('wake_word_port', 10400)}",
+        "--preload-model", config.get('wakeword', 'ok_jarvis'),
     ]
 
-    # Execute the wyoming_openwakeword module
+    # Execute the main script directly
     try:
         subprocess.check_call(args)
     except subprocess.CalledProcessError as e:
-        print(f"Error: Failed to run wyoming_openwakeword. {e}")
+        print(f"Error: Failed to run wakeword service. {e}")
         sys.exit(e.returncode)
 
 if __name__ == "__main__":
