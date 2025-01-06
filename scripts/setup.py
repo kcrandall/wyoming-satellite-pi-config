@@ -195,7 +195,8 @@ def setup_satellite():
     if not setup_virtual_environment(venv_path, requirements_files):
         logger.error("Failed to set up Satellite virtual environment")
         return False
-
+    
+    install_additional_packages(venv_path)
     logger.info("Satellite setup complete")
     return True
 
